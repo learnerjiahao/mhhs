@@ -1,0 +1,129 @@
+#!/usr/bin/python3
+# -*- coding: UTF-8 -*-
+
+import json
+import math
+import sys
+from optparse import OptionParser
+
+
+def solveNodeRank(depth):
+    return 2 ** depth - 1
+
+
+def getFather(nodeId):
+    return int(math.floor((nodeId - 1) / 2))
+
+
+def getSons(nodeId):
+    return (2 * nodeId + 1), (2 * nodeId + 2)
+
+
+def getProcessorIdBynodeId(nodeId, node_rank, processor_rank):
+    return (node_rank - nodeId - 1) % processor_rank
+
+
+def getNodeCountInOneProcessor(processor_id, node_rank, processor_rank):
+    if processor_id < (node_rank % processor_rank):
+        return int(math.ceil(node_rank / processor_rank))
+    else:
+        return int(math.floor(node_rank / processor_rank))
+
+
+def solveNodeIdByIndex(index, processor_id, node_rank, processor_rank):
+    return node_rank - 1 - index *  processor_rank - processor_id
+
+def getDownstreams(upNodeId, node_rank, processor_rank):
+    downstreams = []
+
+    if(upNodeId == 0):
+        return downstreams
+
+    downstream = {}
+    downstream['node_id'] = getFather(upNodeId)
+    downstream['locate'] = getProcessorIdBynodeId(downstream['node_id'], node_rank, processor_rank)
+
+    downstreams.append(downstream)
+
+    return downstreams
+
+
+def getUpstreams(downNodeId, node_rank, processor_rank):
+
+    upstreams = []
+
+    if(downNodeId >= (node_rank-1)/2):
+        return upstreams
+
+    upstreamLeft = {}
+    upstreamRight = {}
+
+    upstreamLeft['node_id'], upstreamRight['node_id'] = getSons(downNodeId)
+
+    upstreamLeft['locate'] = getProcessorIdBynodeId(upstreamLeft['node_id'], node_rank, processor_rank)
+    upstreams.append(upstreamLeft)
+
+    upstreamRight['locate'] = getProcessorIdBynodeId(upstreamRight['node_id'], node_rank, processor_rank)
+    upstreams.append(upstreamRight)
+
+    return upstreams
+
+
+def getNodesByProcessor(processor_id, node_rank, processor_rank):
+    dispatch = {}
+
+    dispatch['rank_id'] = processor_id
+
+    nodes_count = getNodeCountInOneProcessor(processor_id, node_rank, processor_rank)
+    dispatch['nodes_count'] = nodes_count
+
+    nodes = []
+    for index in range(nodes_count):
+        node = {}
+
+        node['node_id'] = solveNodeIdByIndex(index, processor_id, node_rank, processor_rank)
+        node['upstream'] = getUpstreams(node['node_id'], node_rank, processor_rank)
+        node['downstream'] = getDownstreams(node['node_id'], node_rank, processor_rank)
+
+        nodes.append(node)
+
+    dispatch['nodes'] = nodes
+
+    return dispatch
+
+
+def create_dispatch_json_file(depth, pronum, outputfile):
+    data = {}
+
+    data['header'] = {}
+    data['header']['ranks'] = pronum
+
+    dispatchs = []
+    all_nodes_rank = solveNodeRank(depth)
+
+    for processor_id in range(pronum):
+        dispatchs.append(getNodesByProcessor(processor_id, all_nodes_rank, pronum))
+
+    data['dispatch'] = dispatchs
+
+    # 写入 JSON 数据
+    with open(outputfile, 'w') as f:
+        json.dump(data, f, indent=2, sort_keys=False, ensure_ascii=True)
+
+
+def main(argv):
+
+    parser = OptionParser(usage="%prog [options]")
+    parser.add_option("-d", "--depth", action="store", type="int",
+                      dest="depth", help="the depth of binary tree", default=4)
+    parser.add_option("-p", "--pronum", action="store", type="int",
+                      dest="pronum", help="the processor_num of simulation", default=5)
+    parser.add_option("-o", "--ofile", action="store", type="string",
+                      dest="ofile", help="the filename of output dispatch json file", default='dispatch.json')
+    (options, args) = parser.parse_args()
+
+    create_dispatch_json_file(options.depth, options.pronum, options.ofile)
+
+
+if __name__ == "__main__":
+    main(sys.argv)

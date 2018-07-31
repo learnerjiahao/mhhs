@@ -1,0 +1,8 @@
+# Ignore CI build directory
+*build*/
+.idea/
+inputs/config/*
+inputs/outputs/*
+inputs/dispatch/*
+inputs/model_inputs/*
+tool/easydhm/inputs/*

@@ -1,0 +1,5 @@
+[dispatch]
+dispatch_file_prefix = "../../inputs/dispatch/dtoo/dispatch_2/dispatch.json"
+
+[simulation]
+simulation_steps = 1548

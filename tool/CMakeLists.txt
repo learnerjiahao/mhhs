@@ -1,0 +1,2 @@
+add_subdirectory(rdm_gen_model_inp)
+add_subdirectory(easydhm)
