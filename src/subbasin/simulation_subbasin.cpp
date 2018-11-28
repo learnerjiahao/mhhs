@@ -5,12 +5,10 @@
 #include <iostream>
 #include <sstream>
 #include <algorithm>
-#include <omp.h>
+//#include <omp.h>
 #include "simulation_subbasin.h"
-#include "../models/simple_hbv_pfmodel.h"
 #include "../utils/mpiutil.h"
 #include "../context.h"
-#include "../models/base_model.h"
 #include "../simulation/simulation.h"
 
 bool SimulationSubbasin::isCompleted(utils::_type_time_step allSimulationSteps) {

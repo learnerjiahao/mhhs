@@ -3,7 +3,6 @@
 //
 
 #include "hru.h"
-#include "../models/simple_hbv_pfmodel.h"
 
 HRU::HRU(utils::_type_hruid hruid) : hruid(hruid) {}
 

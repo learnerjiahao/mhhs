@@ -1,62 +1,39 @@
 //
-// Created by wujiahao on 18-6-20.
+// Created by wujiahao on 2018/11/22.
 //
 
 #ifndef MHHSS_BASE_MODEL_H
 #define MHHSS_BASE_MODEL_H
 
 
-#include <map>
 #include <vector>
+#include "base/values_container.h"
 #include "../simulation/routing_data_meta.h"
+#include "../utils/ret_msg.h"
+#include "model_context.h"
 
 class BaseModel {
 
 protected:
-    std::map<std::string, double> paraDatas;
-    std::vector<std::string> paraDataNames;
+    virtual RetMSG checkInitDatas(const std::map<std::string, double> &initDatas);
+    virtual RetMSG checkParaDatas(const std::map<std::string, double> &paraDatas);
+    virtual RetMSG checkInputDatas(const std::map<std::string, std::vector<double>> &inputDatas);
 
-    std::map<std::string, double> initDatas;
-    std::vector<std::string> initDataNames;
+    RetMSG checkDatas(const std::map<std::string, double> &datas, const std::vector<std::string> &dataNames);
 
-    std::vector<std::string> inputDataNames;
-    std::map<utils::_type_time_step ,std::map<std::string, double>> inputDatas;
-
-public:
-    BaseModel();
+    RetMSG checkModelDatas(const ModelContext *pModelContext);
 
 public:
-    virtual ~BaseModel();
+    BaseModel(const ModelContext *pModelContext);
+    virtual RoutingDataMeta runModel(const ModelContext &pModelContext,
+                                     const ConfigValues &configValues,
+                                     const RoutingDataMeta &upRoutDatas,
+                                     int nowTimeStep) = 0;
 
-public:
-    void runProduceFlowSimul(std::map<std::string,double> &inputDatas, int nowTimeStep);
-    RoutingDataMeta runRouteFlowSimul(std::map<std::string,double> &inputDatas, int nowTimeStep, RoutingDataMeta &upRoutDatas);
+    virtual std::vector<std::string> getParaNames() = 0;
+    virtual std::vector<std::string> getInitNames() = 0;
+    virtual std::vector<std::string> getInputNames() = 0;
 
-public:
-    void updateParaDatas(std::map<std::string,double> &paraDatas);
-    virtual void loadModelParaDatas(std::string filepath) = 0;
-    virtual void loadModelInitDatas(std::string filepath) = 0;
-    virtual void loadModelInputDatas(std::string filepath) = 0;
-
-    std::map<std::string, double> &getOneSteptimeInputDatas(int nowTimeStep);
-
-protected:
-    bool checkParaDatas(std::map<std::string, double> &paraDatas);
-    bool checkInitDatas(std::map<std::string, double> &initDatas);
-
-    bool checkDatas(std::map<std::string, double> &datas, std::vector<std::string> &dataNames);
-    bool checkInputDatas(std::map<std::string, double> &paraDatas);
-
-    double getParaValue(std::string paraKey);
-    double getInitValue(std::string initDataKey);
-    void updateInitValue(std::string initDataKey, double value);
-
-    virtual void produceFlowSimul(std::map<std::string, double> &inputDatas, int nowTimestep) = 0;
-    virtual RoutingDataMeta routeFlowSimul(std::map<std::string, double> &inputDatas, int nowTimestep,
-                                           RoutingDataMeta &upRoutedDatas) = 0;
-
-
-    void updateMapDatas(std::map<std::string, double> &targetMap, std::map<std::string, double> &srcMap);
 };
 
 

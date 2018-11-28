@@ -9,8 +9,6 @@
 #include "../utils/mpiutil.h"
 #include "../readInputs/parse_dispatch.h"
 #include "../models/base_model.h"
-#include "../models/xinanjiang3_model.h"
-#include "../models/xinanjiang2_model.h"
 
 Context *Simulation::context = Context::getInstance();
 SubbasinsContainer *Simulation::subbasinsCt = nullptr;

@@ -34,7 +34,12 @@ void mpiutil::mpiAbort(std::string errMsg, int errCode, bool onlyMasterP) {
     }
 //    MPI_Finalize();
 //    exit(errCode);
+#ifdef USE_MPI
     MPI_Abort(MPI_COMM_WORLD, errCode);
+#else
+    exit(errCode);
+#endif
+
 }
 //
 //template<typename T>

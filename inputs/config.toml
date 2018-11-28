@@ -2,4 +2,34 @@
 dispatch_file_prefix = "../../inputs/dispatch/dtoo/dispatch_2/dispatch.json"
 
 [simulation]
-simulation_steps = 1548
+start_time = "2006-01-01 00:00"  # must be set
+# either time_steps or end_time should be set, meanwhile time_step has higher priority
+# time_steps = 60      # must be set if end_time is not set
+end_time = "2008-01-01 00:00"   # should be set if time_steps is not set
+time_stride = 24  # unit: h , default is 24h
+input_data_path = "model_input/huaihe_subset/"  # the input data files path, default is model_input
+
+[scheduler]
+pickup_strategy = "ring"
+
+[models]
+global_runoff_model = "xaj"
+global_routing_model = "mskg"
+[models.xinanjiang]
+    name = "xaj"
+[models.sac]
+    name = "sac"
+[models.hims]
+    name = "hims"
+[models.muskingum]
+    name = "mskg"
+[models.diffusive_wave]
+    name = "dswv"
+
+#[output]
+#eval_mode = true  # whether generate eval result (default is false)
+#output_tmp = true    # whether output tmp simulation result(default false which means not)
+#result_subbasins = []   # the subbasins whose simulation flow need to output(if not define or size of result_subbasins is 0, all subbasins' result will be output)
+#path = "outputs/huaihe"   # simulation result's file path(default is ./out)
+#ext = "txt"   # suffix of result files' filename
+

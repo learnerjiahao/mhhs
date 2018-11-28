@@ -1,80 +1,64 @@
 //
-// Created by wujiahao on 18-6-20.
+// Created by wujiahao on 2018/11/22.
 //
 
 #include "base_model.h"
+#include "../utils/mpiutil.h"
 
-void BaseModel::updateParaDatas(std::map<std::string, double> &paraDatas) {
-    if (!checkParaDatas(paraDatas)) {
-        // todo
-        exit(-1);
+RetMSG BaseModel::checkInitDatas(const std::map<std::string, double> &initDatas) {
+    RetMSG msg = checkDatas(initDatas, this->getInitNames());
+    if (!msg.isSuccess()) {
+        return RetMSG("init data: " + msg.getMsg(), -1);
     }
-    updateMapDatas(this->paraDatas, paraDatas);
+    return RetMSG();
 }
 
-bool BaseModel::checkParaDatas(std::map<std::string, double> &paraDatas) {
-    return checkDatas(paraDatas, this->paraDataNames);
+RetMSG BaseModel::checkParaDatas(const std::map<std::string, double> &paraDatas) {
+    RetMSG msg = checkDatas(paraDatas, this->getParaNames());
+    if (!msg.isSuccess()) {
+        return RetMSG("param data: " + msg.getMsg(), -1);
+    }
+    return RetMSG();
 }
 
-bool BaseModel::checkInitDatas(std::map<std::string, double> &initDatas) {
-    return checkDatas(initDatas, this->initDataNames);
-}
-
-bool BaseModel::checkInputDatas(std::map<std::string, double> &inputDatas) {
-    return checkDatas(inputDatas, this->inputDataNames);
-}
-
-bool BaseModel::checkDatas(std::map<std::string, double> &datas, std::vector<std::string> &dataNames) {
-    for (int i = 0; i < dataNames.size(); ++i) {
-        if (datas.find(dataNames.at(i)) == datas.end()) {
-            return false;
+RetMSG BaseModel::checkInputDatas(const std::map<std::string, std::vector<double>> &inputDatas) {
+    std::vector<std::string> inputNames = this->getInputNames();
+    for (int i = 0; i < inputNames.size(); ++i) {
+        if (inputDatas.find(inputNames.at(i)) == inputDatas.end()) {
+            return RetMSG("input data:" + inputNames.at(i) + " can not be found", -1);
         }
     }
-    return true;
+    return RetMSG();
 }
 
-void BaseModel::runProduceFlowSimul(std::map<std::string, double> &inputDatas, int nowTimeStep) {
-    if (!checkInputDatas(inputDatas)) {
-        // todo
-        exit(-1);
+RetMSG BaseModel::checkDatas(const std::map<std::string, double> &datas, const std::vector<std::string> &dataNames) {
+    for (int i = 0; i < dataNames.size(); ++i) {
+        if (datas.find(dataNames.at(i)) == datas.end()) {
+            return RetMSG(dataNames.at(i) + " can not be found", -1);
+        }
     }
-    produceFlowSimul(inputDatas, nowTimeStep);
+    return RetMSG();
 }
 
-RoutingDataMeta BaseModel::runRouteFlowSimul(std::map<std::string, double> &inputDatas, int nowTimeStep, RoutingDataMeta &upRoutDatas) {
-    if (!checkInputDatas(inputDatas)) {
-        // todo
-        exit(-1);
+RetMSG BaseModel::checkModelDatas(const ModelContext *pModelContext,) {
+    RetMSG msg = checkInitDatas(pModelContext->initDatas);
+    if (!msg.isSuccess()) {
+        return RetMSG("subbasin(" + std::to_string(pModelContext->nodeid) + "): " + msg.getMsg(), -1);
     }
-    return routeFlowSimul(inputDatas, nowTimeStep, upRoutDatas);
+    msg = checkParaDatas(pModelContext->params);
+    if (!msg.isSuccess()) {
+        return RetMSG("subbasin(" + std::to_string(pModelContext->nodeid) + "): " + msg.getMsg(), -1);
+    }
+    msg = checkInputDatas(pModelContext->inputDatas);
+    if (!msg.isSuccess()) {
+        return RetMSG("subbasin(" + std::to_string(pModelContext->nodeid) + "): " + msg.getMsg(), -1);
+    }
+    return RetMSG();
 }
 
-double BaseModel::getParaValue(std::string paraKey) {
-    return this->paraDatas.at(paraKey);
-}
-
-double BaseModel::getInitValue(std::string initDataKey) {
-    return this->initDatas.at(initDataKey);
-}
-
-void BaseModel::updateInitValue(std::string initDataKey, double value) {
-    this->initDatas[initDataKey] = value;
-}
-
-void BaseModel::updateMapDatas(std::map<std::string, double> &targetMap, std::map<std::string, double> &srcMap) {
-    for (std::map<std::string, double>::iterator it = srcMap.begin(); it != srcMap.end() ; ++it) {
-        targetMap[it->first] = it->second;
+BaseModel::BaseModel(const ModelContext *pModelContext) {
+    RetMSG msg = checkModelDatas(pModelContext);
+    if (!msg.isSuccess()) {
+        mpiutil::mpiAbort(msg.getMsg(), msg.getErrCode(), false);
     }
 }
-
-std::map<std::string, double> &BaseModel::getOneSteptimeInputDatas(int nowTimeStep) {
-    return this->inputDatas.at(nowTimeStep);
-}
-
-BaseModel::~BaseModel() {
-
-}
-
-BaseModel::BaseModel() {}
-
-

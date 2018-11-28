@@ -1,11 +1,9 @@
 set(AppName mhhss)
 set(M_EXECUTE_BIN_NAME ${AppName})
 set(M_LIB_NAME "mhhsslib")
-set(EASYDHMLIB "easydhm")
 
 enable_language(CXX)
 enable_language(C)
-enable_language(Fortran)
 
 add_definitions("-Wall -g")
 option(USE_PTHREAD "Use pthread" OFF) #
@@ -24,6 +22,8 @@ set(COMPILE_FLAGS "${COMPILE_FLAGS} ${MPI_CXX_COMPILE_FLAGS}")
 set(LINK_FLAGS "${LINK_FLAGS} ${MPI_CXX_LINK_FLAGS}")
 include_directories(${MPI_CXX_INCLUDE_PATH})
 set(EXTRA_LIBS ${EXTRA_LIBS} ${MPI_CXX_LIBRARIES}) #add mpi lib
+
+add_definitions("-DUSE_MPI")
 
 # The version number.
 set (Tutorial_VERSION_MAJOR 1)

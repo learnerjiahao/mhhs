@@ -1,4 +1,3 @@
-add_subdirectory(models/easydhm)
 # include directory
 include_directories(${PROJECT_SOURCE_DIR}/vendor/include)
 set(HEADER_FILES
@@ -7,7 +6,6 @@ set(HEADER_FILES
         subbasin/subbasin.h
         subbasin/hru.h
         subbasin/simulation_subbasin.h
-        models/simple_hbv_pfmodel.h
         simulation/routing_data_meta.h
         simulation/trouting_data.h
         simulation/routed_data.h
@@ -19,16 +17,14 @@ set(HEADER_FILES
         message/routed_data_imessage.h
         message/routed_data_imsgs_pool.h
         simulation/subbasins_container.h
-        models/xinanjiang3_model.h
-        models/base_model.h
-        models/XinanjiangModel.h
-        models/xinanjiang2_model.h)
+        models/xaj3/xaj3_runoff_model.h
+        utils/ret_msg.h
+        )
 
 set(SOURCE_FILES
         subbasin/subbasin.cpp
         subbasin/hru.cpp
         subbasin/simulation_subbasin.cpp
-        models/simple_hbv_pfmodel.cpp
         simulation/routing_data_meta.cpp
         simulation/trouting_data.cpp
         simulation/routed_data.cpp
@@ -40,10 +36,24 @@ set(SOURCE_FILES
         message/routed_data_imessage.cpp
         message/routed_data_imsgs_pool.cpp
         simulation/subbasins_container.cpp
-        models/xinanjiang3_model.cpp
+        )
+
+
+set(MODEL_HEADS
+        models/base_model.h
+        models/model_context.h
+        utils/model_file_utils.h
+        models/model_factory.h
+        models/model_producer.h
+        models/model_warehouse.h
+        models/xaj3/xaj3_producer.h)
+
+set(MODEL_SRCS
         models/base_model.cpp
-        models/XinanjiangModel.cpp
-        models/xinanjiang2_model.cpp)
+        models/model_context.cpp
+        models/model_factory.cpp
+        models/xaj3/xaj3_runoff_model.cpp
+        models/xaj3/xaj3_producer.cpp)
 
 set(MAIN_FILE main.cpp)
 
@@ -54,7 +64,7 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 
 add_executable(${M_EXECUTE_BIN_NAME} ${MAIN_FILE})
 
-add_library(${M_LIB_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES})
+add_library(${M_LIB_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES} ${MODEL_HEADS} ${MODEL_SRCS})
 
 set(EXTRA_LIBS ${M_LIB_NAME} ${EXTRA_LIBS})
 
