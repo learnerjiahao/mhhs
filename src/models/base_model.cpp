@@ -40,7 +40,7 @@ RetMSG BaseModel::checkDatas(const std::map<std::string, double> &datas, const s
     return RetMSG();
 }
 
-RetMSG BaseModel::checkModelDatas(const ModelContext *pModelContext,) {
+RetMSG BaseModel::checkModelDatas(const ModelContext *pModelContext) {
     RetMSG msg = checkInitDatas(pModelContext->initDatas);
     if (!msg.isSuccess()) {
         return RetMSG("subbasin(" + std::to_string(pModelContext->nodeid) + "): " + msg.getMsg(), -1);

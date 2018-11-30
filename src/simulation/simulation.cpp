@@ -9,10 +9,11 @@
 #include "../utils/mpiutil.h"
 #include "../readInputs/parse_dispatch.h"
 #include "../models/base_model.h"
+#include "../models/model_producer.h"
+#include "../models/model_factory.h"
 
 Context *Simulation::context = Context::getInstance();
 SubbasinsContainer *Simulation::subbasinsCt = nullptr;
-std::map<utils::_type_nodeid , BaseModel*> *Simulation::hydroModels = new std::map<utils::_type_nodeid , BaseModel*>();
 
 void Simulation::initSimulation(int argc, char *argv[]) {
     // init mpi
@@ -56,24 +57,17 @@ void Simulation::prepareSimulation() {
     ParseDispatch pd(context->getDispatchFilePath(mpiutil::proid));
     pd.parsingDispatch(*subbasinsCt);
 
-    // 2. sort
+    // 2. init subbasinsCt
     subbasinsCt->initSortCt();
 
     // 3.init model
     for (auto &node : *(subbasinsCt->subbasins)) {
-        BaseModel *hydroModel = new XinAnJiang2Model();
-        // 2.load subbasin level model parameters
-        char pFileName[100];
-        std::sprintf(pFileName, "%s%d%s", "../../inputs/model_inputs/", node.first, ".para\0");
-        hydroModel->loadModelParaDatas(pFileName); // todo
-        // 3. load subbasin level init datas
-        std::sprintf(pFileName, "%s%d%s", "../../inputs/model_inputs/", node.first, ".ini\0");
-        hydroModel->loadModelInitDatas(pFileName); // todo
-        // 3. load subbasin level input datas
-        std::sprintf(pFileName, "%s%d%s", "../../inputs/model_inputs/", node.first, ".inp\0");
-        hydroModel->loadModelInputDatas(pFileName); // todo
-
-        hydroModels->insert(std::make_pair(node.first, hydroModel));
+        ModelContext *pContext = new ModelContext(node.first);
+        pContext->initContext(*Config::getInstance());
+        BaseModel *runoffModel = ModelFactory::prodeceRunoffModel(pContext);
+        BaseModel *routingModel = ModelFactory::prodeceRoutingModel(pContext);
+        node.second.setModelContext(pContext);
+        node.second.setModels(runoffModel, routingModel);
     }
 
     // 4.init msgsPool's initial capacity
@@ -142,12 +136,11 @@ void Simulation::runSimulation() {
 }
 
 void Simulation::finishSimulation() {
+//    for (auto &node : *subbasinsCt) {
+//        delete(model.second);
+//    }
     delete (subbasinsCt);
     delete (context);
-    for (auto &model : *hydroModels) {
-        delete(model.second);
-    }
-    delete hydroModels;
     mpiutil::mpiFinish();
 }
 

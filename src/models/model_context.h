@@ -8,10 +8,9 @@
 
 #include <vector>
 #include <sstream>
-#include "base/values_container.h"
 #include "../utils/predefine.h"
 #include "../utils/ret_msg.h"
-#include "../config_values.h"
+#include "../readInputs/config.h"
 
 class ModelContext {
 
@@ -28,18 +27,18 @@ public:
 
     bool hadObser;
 
-    std::string runoffModel;
-    std::string routingModel;
+    std::string runoffModelName;
+    std::string routingModelName;
 
 protected:
-    RetMSG readMapValues(const std::string &filePath, std::map<std::string, double> &dataMap, const ConfigValues &configValues);
-    RetMSG readInputDatas(const std::string &filePath, const ConfigValues &configValues);
-    RetMSG readProperties(const std::string &filePath, const ConfigValues &configValues);
-    RetMSG readObserDatas(const std::string &filePath, const ConfigValues &configValues);
+    RetMSG readMapValues(const std::string &filePath, std::map<std::string, double> &dataMap, const Config &configValues);
+    RetMSG readInputDatas(const std::string &filePath, const Config &configValues);
+    RetMSG readProperties(const std::string &filePath, const Config &configValues);
+    RetMSG readObserDatas(const std::string &filePath, const Config &configValues);
 
 public:
     ModelContext(utils::_type_nodeid _nodeid);
-    RetMSG initContext(const ConfigValues &configValues);
+    RetMSG initContext(const Config &configValues);
 };
 
 #endif //MHHSS_MODEL_CONTEXT_H

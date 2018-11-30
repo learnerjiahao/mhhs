@@ -36,7 +36,8 @@ set(SOURCE_FILES
         message/routed_data_imessage.cpp
         message/routed_data_imsgs_pool.cpp
         simulation/subbasins_container.cpp
-        )
+        utils/ret_msg.cpp
+        utils/datetime_parser.cpp)
 
 
 set(MODEL_HEADS
@@ -66,9 +67,7 @@ add_executable(${M_EXECUTE_BIN_NAME} ${MAIN_FILE})
 
 add_library(${M_LIB_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES} ${MODEL_HEADS} ${MODEL_SRCS})
 
-set(EXTRA_LIBS ${M_LIB_NAME} ${EXTRA_LIBS})
-
-target_link_libraries(${M_EXECUTE_BIN_NAME} ${EXTRA_LIBS}) # extra lib
+target_link_libraries(${M_EXECUTE_BIN_NAME} ${M_LIB_NAME} ${EXTRA_LIBS}) # extra lib
 
 ##########################
 ##### install files

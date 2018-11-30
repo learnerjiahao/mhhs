@@ -7,13 +7,8 @@ include_directories(${PROJECT_SOURCE_DIR}/src)
 set(TEST_HEADER_FILES)
 
 set(TEST_SOURCE_FILES
-#        model/hbv_test.cpp
-#        readinputs/readinputs_test.cpp
-#        utils/mpiutil_test.cpp
-#        simulation/simulation.cpp
-#        subbasin/subbasin_test.cpp
-#        model/xinanjiang_test.cpp
-        model/easydhm_test.cpp)
+        model/test_model_context.cpp
+        readinputs/readinputs_test.cpp)
 
 # set binary path and lib storage path wile compiling process.
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
@@ -25,7 +20,8 @@ add_executable(${M_UINT_TEST_NAME} ${TEST_SOURCE_FILES} ${TEST_HEADER_FILES})
 #set(EXTRA_LIBS ${M_LIB_NAME} ${EXTRA_LIBS})
 # Extra linking for the project.
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -rpath -O3 -ipo -xavx")
-target_link_libraries(${M_UINT_TEST_NAME} ${EXTRA_LIBS} ${EASYDHMLIB})
+message(STATUS ${EXTRA_LIBS})
+target_link_libraries(${M_UINT_TEST_NAME} ${EXTRA_LIBS})
 
 # This is so you can do 'make test' to see all your tests run, instead of
 # manually running the executable runUnitTests to see those specific tests.

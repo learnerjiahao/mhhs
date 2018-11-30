@@ -29,6 +29,10 @@ private:
     std::map<utils::_type_nodeid, RoutingDataMeta> routingData2Downstream;
     RoutingDataMeta nowFolwData;
 
+    ModelContext *pModelContext = nullptr;
+    BaseModel *pRunoffModel = nullptr;
+    BaseModel *pRoutingModel = nullptr;
+
 private:
 
     void routingInSimulation();
@@ -54,6 +58,9 @@ public:
     bool isSlopeSimuedNowStep();
 
     utils::_type_time_step getNowSimuStep();
+
+    void setModelContext(ModelContext *pModelContext);
+    void setModels(BaseModel *pRunoffModel, BaseModel *pRoutingModel);
 
 };
 

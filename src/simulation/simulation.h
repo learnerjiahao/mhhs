@@ -25,7 +25,7 @@ private:
 
 public:
     static SubbasinsContainer *subbasinsCt;
-    static std::map<utils::_type_nodeid , BaseModel*> *hydroModels;
+//    static std::map<utils::_type_nodeid , BaseModel*> *hydroModels;
     static Context *context;
 
     static void run(int argc, char *argv[]);

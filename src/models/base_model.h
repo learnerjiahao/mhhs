@@ -7,10 +7,10 @@
 
 
 #include <vector>
-#include "base/values_container.h"
 #include "../simulation/routing_data_meta.h"
 #include "../utils/ret_msg.h"
 #include "model_context.h"
+#include "../readInputs/config.h"
 
 class BaseModel {
 
@@ -26,7 +26,7 @@ protected:
 public:
     BaseModel(const ModelContext *pModelContext);
     virtual RoutingDataMeta runModel(const ModelContext &pModelContext,
-                                     const ConfigValues &configValues,
+                                     const Config &configValues,
                                      const RoutingDataMeta &upRoutDatas,
                                      int nowTimeStep) = 0;
 

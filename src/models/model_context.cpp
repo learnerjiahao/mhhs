@@ -11,7 +11,7 @@
 
 ModelContext::ModelContext(utils::_type_nodeid _nodeid): nodeid(_nodeid) {}
 
-RetMSG ModelContext::initContext(const ConfigValues &configValues) {
+RetMSG ModelContext::initContext(const Config &configValues) {
 
     std::string filepath = configValues.input_data_path + '/' + std::to_string(nodeid) + utils::CONFIG_FILE_SUFFIX;
     RetMSG msg = readProperties(filepath, configValues);
@@ -34,7 +34,7 @@ RetMSG ModelContext::initContext(const ConfigValues &configValues) {
         return msg;
 
     if (hadObser) {
-        filepath = configValues.input_data_path + '/' + std::to_string(nodeid) + utils::INPUT_FILE_SUFFIX;
+        filepath = configValues.input_data_path + '/' + std::to_string(nodeid) + utils::OBSER_FILE_SUFFIX;
         msg = readObserDatas(filepath, configValues);
         if (!msg.isSuccess())
             return msg;
@@ -43,7 +43,7 @@ RetMSG ModelContext::initContext(const ConfigValues &configValues) {
     return RetMSG();
 }
 
-RetMSG ModelContext::readMapValues(const std::string &filePath, std::map<std::string, double> &dataMap, const ConfigValues &configValues) {
+RetMSG ModelContext::readMapValues(const std::string &filePath, std::map<std::string, double> &dataMap, const Config &configValues) {
     std::ifstream ifs(filePath);
     if (!ifs.good()) {
         return RetMSG(filePath + " not exist!", -1);
@@ -57,7 +57,7 @@ RetMSG ModelContext::readMapValues(const std::string &filePath, std::map<std::st
     return RetMSG();
 }
 
-RetMSG ModelContext::readInputDatas(const std::string &filePath, const ConfigValues &configValues) {
+RetMSG ModelContext::readInputDatas(const std::string &filePath, const Config &configValues) {
     std::ifstream ifs_input(filePath);
     if (!ifs_input.good()) {
         return RetMSG(filePath + " not exist!", -1);
@@ -99,7 +99,7 @@ RetMSG ModelContext::readInputDatas(const std::string &filePath, const ConfigVal
     return RetMSG();
 }
 
-RetMSG ModelContext::readProperties(const std::string &filePath, const ConfigValues &configValues) {
+RetMSG ModelContext::readProperties(const std::string &filePath, const Config &configValues) {
     std::ifstream ifs(filePath);
     if (!ifs.good()) {
         return RetMSG(filePath + " not exist!", -1);
@@ -124,13 +124,13 @@ RetMSG ModelContext::readProperties(const std::string &filePath, const ConfigVal
     ModelFileUtils::readOneValue(valueMap, longitude, "longitude", 0.0);
     ModelFileUtils::readOneValue(valueMap, elev, "elev", 0.0);
 
-    ModelFileUtils::readOneValue(valueMap, runoffModel, "runoff_model", configValues.global_runoff_model);
-    ModelFileUtils::readOneValue(valueMap, routingModel, "routting_model", configValues.global_routting_model);
+    ModelFileUtils::readOneValue(valueMap, runoffModelName, "runoff_model", configValues.global_runoff_model);
+    ModelFileUtils::readOneValue(valueMap, routingModelName, "routting_model", configValues.global_routting_model);
 
     return RetMSG();
 }
 
-RetMSG ModelContext::readObserDatas(const std::string &filePath, const ConfigValues &configValues) {
+RetMSG ModelContext::readObserDatas(const std::string &filePath, const Config &configValues) {
     std::ifstream ifs_input(filePath);
     std::string TM, stime;
     double obser_data;

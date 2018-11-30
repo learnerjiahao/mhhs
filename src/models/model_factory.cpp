@@ -29,7 +29,21 @@ ModelFactory::~ModelFactory() {
     }
 }
 
-BaseModel *ModelFactory::prodeceNewModel(const ModelContext *pModelContext, const std::string &model_name) {
+BaseModel *ModelFactory::prodeceRunoffModel(const ModelContext *pModelContext) {
+    return prodeceNewModel(pModelContext, true);
+}
+
+BaseModel *ModelFactory::prodeceRoutingModel(const ModelContext *pModelContext) {
+    return prodeceNewModel(pModelContext, false);
+}
+
+BaseModel *ModelFactory::prodeceNewModel(const ModelContext *pModelContext, bool genRunoffModel) {
+    std::string model_name;
+    if (genRunoffModel) {
+        model_name = pModelContext->runoffModelName;
+    } else {
+        model_name = pModelContext->routingModelName;
+    }
     if (models_registry.find(model_name) == models_registry.end())
         return nullptr;
     return models_registry[model_name]->newModel(pModelContext);

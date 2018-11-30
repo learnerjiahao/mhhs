@@ -14,7 +14,7 @@ endif ()
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
 # Standard linking to gtest stuff.
-set(EXTRA_LIBS gtest gtest_main ${EXTRA_LIBS})
+set(EXTRA_LIBS ${M_LIB_NAME} gtest gtest_main ${EXTRA_LIBS})
 MESSAGE(STATUS "Set googletest as test library.")
 
 #add_definitions("-DNO_MPI")

@@ -116,9 +116,11 @@ utils::_type_time_step SimulationSubbasin::getNowSimuStep() {
 }
 
 void SimulationSubbasin::slopePLSimulation() {
-    Simulation::hydroModels->at(nodeid)->
-            runProduceFlowSimul(Simulation::hydroModels->at(nodeid)->getOneSteptimeInputDatas(nowSimulationStep),
-                                nowSimulationStep); // todo
+//    Simulation::hydroModels->at(nodeid)->
+//            runProduceFlowSimul(Simulation::hydroModels->at(nodeid)->getOneSteptimeInputDatas(nowSimulationStep),
+//                                nowSimulationStep); // todo
+    RoutingDataMeta upRoutedDatas;
+    this->nowFolwData = pRunoffModel->runModel(*pModelContext, *Config::getInstance(), upRoutedDatas, nowSimulationStep);
     isSlopeSimuedThisStep = true;
 }
 
@@ -132,9 +134,10 @@ void SimulationSubbasin::routingInSimulation() {
 #ifdef USE_PTHREAD
     pthread_rwlock_unlock(&this->pthread_rwlock_upstreamsRoutedD);
 #endif
-    this->nowFolwData = Simulation::hydroModels->at(nodeid)->
-            runRouteFlowSimul(Simulation::hydroModels->at(nodeid)->getOneSteptimeInputDatas(nowSimulationStep),
-                              nowSimulationStep, upRoutedDatas);
+//    this->nowFolwData = Simulation::hydroModels->at(nodeid)->
+//            runRouteFlowSimul(Simulation::hydroModels->at(nodeid)->getOneSteptimeInputDatas(nowSimulationStep),
+//                              nowSimulationStep, upRoutedDatas);
+    this->nowFolwData = pRunoffModel->runModel(*pModelContext, *Config::getInstance(), upRoutedDatas, nowSimulationStep);
 }
 
 
@@ -202,4 +205,13 @@ void SimulationSubbasin::handleHadOutputDatas() {
 #ifdef USE_PTHREAD
     pthread_rwlock_destroy(&this->pthread_rwlock_upstreamsRoutedD);
 #endif
+}
+
+void SimulationSubbasin::setModelContext(ModelContext *pModelContext) {
+    this->pModelContext = pModelContext;
+}
+
+void SimulationSubbasin::setModels(BaseModel *pRunoffModel, BaseModel *pRoutingModel) {
+    this->pRunoffModel = pRunoffModel;
+    this->pRoutingModel = pRoutingModel;
 }
