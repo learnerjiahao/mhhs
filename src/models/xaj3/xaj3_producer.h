@@ -16,7 +16,7 @@ private:
     XAJ3ModelProducer() = default;
 
 public:
-    BaseModel *newModel(const ModelContext *pModelContext) override;
+    BaseModel *newModel(ModelContext *pModelContext) override;
     static XAJ3ModelProducer *getInstance();
 };
 #endif //PNOHS_ALPHA_XAJ3_PRODUCER_H
