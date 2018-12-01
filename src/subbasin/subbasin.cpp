@@ -39,10 +39,17 @@ const utils::_type_proid *Subbasin::getOneDownStreamId(int index) {
     if(isOutlet())
         return nullptr;
 
-    if(index >= upstreams.size()) {
+    if(index >= downstreams.size()) {
         return nullptr;
     }
-    return &(upstreams.at(index));
+
+    int i = 0;
+    for (auto &item : downstreams) {
+        if (i == index) {
+            return &item.first;
+        }
+    }
+    return nullptr;
 }
 
 utils::_type_nodeid Subbasin::upstreamCountNotSameLocate() {

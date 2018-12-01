@@ -8,7 +8,7 @@
 #include "../utils/mpiutil.h"
 #include "../utils/datetime_parser.h"
 
-Config* Config::config = new Config();
+Config* Config::config = nullptr;
 
 const std::string Config::DefaultPickupStrategy = "simple";
 
@@ -69,7 +69,10 @@ void Config::resolveConfig(std::string configPath) {
 }
 
 Config *Config::getInstance() {
-    return config;
+    if (Config::config == nullptr) {
+        Config::config = new Config();
+    }
+    return Config::config;
 }
 
 Config::Config() {}

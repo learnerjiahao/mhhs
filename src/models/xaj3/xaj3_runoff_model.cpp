@@ -5,27 +5,18 @@
 #include <cmath>
 #include "xaj3_runoff_model.h"
 
-const std::vector<std::string> XAJ3RunoffModel::paraNames =
-        {"F", "WUM", "WLM", "WDM",
-         "K", "C", "B", "IMP", "SM",
-         "EX", "KG", "KSS",
-         "KKG", "KKSS", "KSTOR"};
-const std::vector<std::string> XAJ3RunoffModel::initNames =
-        {"WU", "WL", "WD", "FR", "S",
-         "QRSS0", "QRG0"};
-const std::vector<std::string> XAJ3RunoffModel::inputNames =
-        {"P", "EI"};
-
-RoutingDataMeta XAJ3RunoffModel::runModel(const ModelContext &pModelContext, const Config &configValues,
+RoutingDataMeta XAJ3RunoffModel::runModel(ModelContext &pModelContext, const Config &configValues,
                                           const RoutingDataMeta &upRoutDatas, int nowTimeStep) {
-
+    double EI = this->EIs[nowTimeStep-1];
+    double P = this->Ps[nowTimeStep-1];
+    
     double W = this->WU + this->WL + this->WD; //WU + WL + WD;
     double WM = this->WUM + this->WLM + this->WDM; //WUM + WLM + WDM;
     double WWMM = (1 + this->B) * WM;
     double A = WWMM * (1 - pow((1 - W / WM), (1 / (1 + this->B))));
 
-    double EM = this->K * EIs[nowTimeStep]; //蒸散发能力
-    double PE = Ps[nowTimeStep] - EM; //计算净雨量
+    double EM = this->K * EI; //蒸散发能力
+    double PE = P - EM; //计算净雨量
 
     //计算进入自由水库的水量R
     double R;
@@ -41,7 +32,7 @@ RoutingDataMeta XAJ3RunoffModel::runModel(const ModelContext &pModelContext, con
 
     //计算蒸发
     double E;
-    double WU1 = this->WU + Ps[nowTimeStep]; //随着降雨流域蓄水量从表层发生变化，同时也有蒸发的存在
+    double WU1 = this->WU + P; //随着降雨流域蓄水量从表层发生变化，同时也有蒸发的存在
     double EU, EL, ED;
 
     if (WU1 >= EM) {
@@ -103,11 +94,11 @@ RoutingDataMeta XAJ3RunoffModel::runModel(const ModelContext &pModelContext, con
                     (1 - this->KSS - this->KG) * this->SM;
         }
     }
-    RS = Ps[nowTimeStep] * this->IMP + RS * (1 - this->IMP); //考虑不透水面
+    RS = P * this->IMP + RS * (1 - this->IMP); //考虑不透水面
     this->FR = 1 - pow((1 - W / WM), (this->B / (1 + this->B)));
 
     //计算蓄水量的变化
-    this->WU = this->WU + Ps[nowTimeStep] - R - EU;
+    this->WU = this->WU + P - R - EU;
     if (this->WU >= this->WUM) {
         this->WL =
                 this->WL - EL + (this->WU - this->WUM);
@@ -153,7 +144,7 @@ RoutingDataMeta XAJ3RunoffModel::runModel(const ModelContext &pModelContext, con
     }
 
     // 单位线汇流计算
-    if (nowTimeStep <= UH.size()) {
+    if (nowTimeStep-1 <= UH.size()) {
         v_RS_tmp.push_back(stateNowRS);
     } else {
         v_RS_tmp.push_back(stateNowRS);
@@ -188,47 +179,40 @@ RoutingDataMeta XAJ3RunoffModel::runModel(const ModelContext &pModelContext, con
     statePrevQRSS = QRSS;
     statePrevQRG = QRG;
 
-    RoutingDataMeta routingDataMeta;
-    routingDataMeta.setFlow(QRS + QRSS + QRG);
-    return routingDataMeta;
-}
-
-std::vector<std::string> XAJ3RunoffModel::getParaNames() {
-    return paraNames;
-}
-
-std::vector<std::string> XAJ3RunoffModel::getInitNames() {
-    return initNames;
-}
-
-std::vector<std::string> XAJ3RunoffModel::getInputNames() {
-    return inputNames;
+    pModelContext.res_flow = QRS + QRSS + QRG;
+    return RoutingDataMeta(QRS + QRSS + QRG);
 }
 
 XAJ3RunoffModel::XAJ3RunoffModel(ModelContext *pModelContext) :
         BaseModel(pModelContext),
-        WUM(pModelContext->params.at("WUM")),
-        WLM(pModelContext->params.at("WLM")),
-        WDM(pModelContext->params.at("WDM")),
-        K(pModelContext->params.at("K")),          // 蒸发皿系数
-        C(pModelContext->params.at("C")),          // 深层蒸散发系数
-        B(pModelContext->params.at("B")),          // 蓄水容量曲线指数
-        IMP(pModelContext->params.at("IMP")),      // 不透水面积比重
-        SM(pModelContext->params.at("SM")),        // 自由水蓄水库容量（mm）
-        EX(pModelContext->params.at("EX")),        // 自由水蓄水容量曲线指数
-        KG(pModelContext->params.at("KG")),        // 地下水从自由水库的出流系数
-        KSS(pModelContext->params.at("KSS")),      // 壤中流出流系数KSS
-        KKG(pModelContext->params.at("KKG")),      // 地下水退水系数KKG
-        KKSS(pModelContext->params.at("KKSS")),    // 壤中流退水系数KKSS
-        KSTOR(pModelContext->params.at("KSTOR")),  // day脉冲汇流计算的参数,Liang
+        WUM(pModelContext->getParamData("WUM")),
+        WLM(pModelContext->getParamData("WLM")),
+        WDM(pModelContext->getParamData("WDM")),
+        K(pModelContext->getParamData("K")),          // 蒸发皿系数
+        C(pModelContext->getParamData("C")),          // 深层蒸散发系数
+        B(pModelContext->getParamData("B")),          // 蓄水容量曲线指数
+        IMP(pModelContext->getParamData("IMP")),      // 不透水面积比重
+        SM(pModelContext->getParamData("SM")),        // 自由水蓄水库容量（mm）
+        EX(pModelContext->getParamData("EX")),        // 自由水蓄水容量曲线指数
+        KG(pModelContext->getParamData("KG")),        // 地下水从自由水库的出流系数
+        KSS(pModelContext->getParamData("KSS")),      // 壤中流出流系数KSS
+        KKG(pModelContext->getParamData("KKG")),      // 地下水退水系数KKG
+        KKSS(pModelContext->getParamData("KKSS")),    // 壤中流退水系数KKSS
+        KSTOR(pModelContext->getParamData("KSTOR")),  // day脉冲汇流计算的参数,Liang
         //状态
-        WU(pModelContext->initDatas.at("WU")),        // 上下深层流域蓄水量（mm）
-        WL(pModelContext->initDatas.at("WL")),
-        WD(pModelContext->initDatas.at("WD")),
-        FR(pModelContext->initDatas.at("FR")),        // 产流面积比重
-        S(pModelContext->initDatas.at("S")),          // 自由水蓄水量（mm）
-        QRSS0(pModelContext->initDatas.at("QRSS0")),  // 壤中流初始流量（m3/s）
-        QRG0(pModelContext->initDatas.at("QRG0")),    // 地下水初始流量（m3/s）
+        WU(pModelContext->getInitData("WU0")),        // 上下深层流域蓄水量（mm）
+        WL(pModelContext->getInitData("WL0")),
+        WD(pModelContext->getInitData("WD0")),
+        FR(pModelContext->getInitData("FR0")),        // 产流面积比重
+        S(pModelContext->getInitData("S0")),          // 自由水蓄水量（mm）
+        QRSS0(pModelContext->getInitData("QRSS0")),  // 壤中流初始流量（m3/s）
+        QRG0(pModelContext->getInitData("QRG0")),    // 地下水初始流量（m3/s）
         // input data
-        Ps(pModelContext->inputDatas.at("P")),
-        EIs(pModelContext->inputDatas.at("EI")) {}
+        Ps(pModelContext->getInputData("P")),
+        EIs(pModelContext->getInputData("EI")) {
+
+    paraNames = {"F", "WUM", "WLM", "WDM",  "K", "C", "B", "IMP", "SM",
+                 "EX", "KG", "KSS", "KKG", "KKSS", "KSTOR"};
+    initNames = {"WU0", "WL0", "WD0", "FR0", "S0", "QRSS0", "QRG0"};
+    inputNames = {"P", "EI"};
+}

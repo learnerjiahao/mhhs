@@ -15,6 +15,7 @@ private:
 
 public:
     RoutingDataMeta();
+    RoutingDataMeta(float flow);
     void addMetaData(const RoutingDataMeta &secondData);
     void updateMetaData(const RoutingDataMeta &secondData);
 

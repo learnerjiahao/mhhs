@@ -155,3 +155,15 @@ RetMSG ModelContext::readObserDatas(const std::string &filePath, const Config &c
         return RetMSG();
     }
 }
+
+double &ModelContext::getParamData(std::string paraName) {
+    return this->params[paraName];
+}
+
+double &ModelContext::getInitData(std::string paraName) {
+    return this->initDatas[paraName];
+}
+
+std::vector<double> &ModelContext::getInputData(std::string paraName) {
+    return this->inputDatas[paraName];
+}

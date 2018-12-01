@@ -11,6 +11,7 @@
 #include "../models/base_model.h"
 #include "../models/model_producer.h"
 #include "../models/model_factory.h"
+#include "../models/model_warehouse.h"
 
 Context *Simulation::context = Context::getInstance();
 SubbasinsContainer *Simulation::subbasinsCt = nullptr;
@@ -53,6 +54,7 @@ void Simulation::initSimulation(int argc, char *argv[]) {
 }
 
 void Simulation::prepareSimulation() {
+
     // 1.load dispatch result datas
     ParseDispatch pd(context->getDispatchFilePath(mpiutil::proid));
     pd.parsingDispatch(*subbasinsCt);
@@ -60,12 +62,23 @@ void Simulation::prepareSimulation() {
     // 2. init subbasinsCt
     subbasinsCt->initSortCt();
 
+    // 3.init model warehouse
+    models::registryModelProducers();
+
     // 3.init model
     for (auto &node : *(subbasinsCt->subbasins)) {
         ModelContext *pContext = new ModelContext(node.first);
         pContext->initContext(*Config::getInstance());
         BaseModel *runoffModel = ModelFactory::prodeceRunoffModel(pContext);
+        RetMSG msg = runoffModel->checkModelDatas(pContext);
+        if (!msg.isSuccess()) {
+            mpiutil::mpiAbort(msg.getMsg(), msg.getErrCode(), false);
+        }
         BaseModel *routingModel = ModelFactory::prodeceRoutingModel(pContext);
+        msg = routingModel->checkModelDatas(pContext);
+        if (!msg.isSuccess()) {
+            mpiutil::mpiAbort(msg.getMsg(), msg.getErrCode(), false);
+        }
         node.second.setModelContext(pContext);
         node.second.setModels(runoffModel, routingModel);
     }

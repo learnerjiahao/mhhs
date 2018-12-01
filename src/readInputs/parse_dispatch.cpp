@@ -45,22 +45,22 @@ void ParseDispatch::parsingDispatch(SubbasinsContainer &nodes) {
     utils::_type_proid prorank = document["prank"].GetInt();
     utils::_type_proid proid = document["proid"].GetInt();
 
-#ifndef NO_MPI
-    if(prorank != mpiutil::proRanks || proid != mpiutil::proid) {
-        recycle();
-        std::string errMsg = "the 'prank' or 'proid' in this dispatch file is not equal to this running env !!!";
-        parseErr(errMsg);
-    }
-#endif
+//#ifndef NO_MPI
+//    if(prorank != mpiutil::proRanks || proid != mpiutil::proid) {
+//        recycle();
+//        std::string errMsg = "the 'prank' or 'proid' in this dispatch file is not equal to this running env !!!";
+//        parseErr(errMsg);
+//    }
+//#endif
     utils::_type_proid nrank = document["nrank"].GetInt();
     const rapidjson::Value &nodesV = document["nodes"];
-#ifndef NO_MPI
-    if(nrank != nodesV.Size()) {
-        recycle();
-        std::string errMsg = "the 'nrank' in this dispatch file is not equal to the count of 'nodes' !!!";
-        parseErr(errMsg);
-    }
-#endif
+//#ifndef NO_MPI
+//    if(nrank != nodesV.Size()) {
+//        recycle();
+//        std::string errMsg = "the 'nrank' in this dispatch file is not equal to the count of 'nodes' !!!";
+//        parseErr(errMsg);
+//    }
+//#endif
 
     for(rapidjson::SizeType i = 0; i < nodesV.Size(); i++) {
 

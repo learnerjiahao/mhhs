@@ -40,24 +40,16 @@ private:
     std::vector<double> &Ps;
     std::vector<double> &EIs;
 
-
     std::list<double> v_RS_tmp;
     double stateNowRS, stateNowRSS, stateNowRG;
     double statePrevQRSS, statePrevQRG;
 
 public:
-    static const std::vector<std::string> paraNames, initNames, inputNames;
     RoutingDataMeta
-    runModel(const ModelContext &pModelContext, const Config &configValues, const RoutingDataMeta &upRoutDatas,
+    runModel(ModelContext &pModelContext, const Config &configValues, const RoutingDataMeta &upRoutDatas,
              int nowTimeStep) override;
-
+public:
     XAJ3RunoffModel(ModelContext *pModelContext);
-
-    std::vector<std::string> getParaNames() override;
-
-    std::vector<std::string> getInitNames() override;
-
-    std::vector<std::string> getInputNames() override;
 };
 
 

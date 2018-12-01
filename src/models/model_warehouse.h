@@ -8,6 +8,8 @@
 #include <string>
 #include "model_factory.h"
 #include "xaj3/xaj3_producer.h"
+#include "xaj/xaj_producer.h"
+#include "muskingum/mskg_model_producer.h"
 
 namespace models {
 
@@ -23,12 +25,13 @@ namespace models {
     static bool registryModelProducers() {
        bool flag =
                 // runoff models
-                ModelFactory::addModelRegistry(XAJ3_MODEL_NAME, XAJ3ModelProducer::getInstance()) //&&
+               ModelFactory::addModelRegistry(XAJ3_MODEL_NAME, XAJ3ModelProducer::getInstance()) &&
+               ModelFactory::addModelRegistry(XAJ_MODEL_NAME, XAJModelProducer::getInstance()) &&
 //                pModelFactory->addRunoffRegistry(SAC_MODEL_NAME, SACModelProducer::getInstance()) &&
 //                // routing models
-//                pModelFactory->addRoutingRegistry(MUSKINGUM_MODEL_NAME, MSKGModelProducer::getInstance()) &&
+                ModelFactory::addModelRegistry(MUSKINGUM_MODEL_NAME, MSKGModelProducer::getInstance()); //&&
 //                pModelFactory->addRoutingRegistry(DIFFUSIVE_WAVES_MODEL_NAME, DSWVModelProducer::getInstance())
-                ;
+//                ;
         return flag;
     }
 }

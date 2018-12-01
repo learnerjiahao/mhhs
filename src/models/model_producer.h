@@ -10,7 +10,7 @@
 
 class ModelProducer {
 public:
-    virtual BaseModel *newModel(const ModelContext *pModelContext) = 0;
+    virtual BaseModel *newModel(ModelContext *pModelContext) = 0;
 };
 
 

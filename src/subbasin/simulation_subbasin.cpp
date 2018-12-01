@@ -137,7 +137,7 @@ void SimulationSubbasin::routingInSimulation() {
 //    this->nowFolwData = Simulation::hydroModels->at(nodeid)->
 //            runRouteFlowSimul(Simulation::hydroModels->at(nodeid)->getOneSteptimeInputDatas(nowSimulationStep),
 //                              nowSimulationStep, upRoutedDatas);
-    this->nowFolwData = pRunoffModel->runModel(*pModelContext, *Config::getInstance(), upRoutedDatas, nowSimulationStep);
+    this->nowFolwData = pRoutingModel->runModel(*pModelContext, *Config::getInstance(), upRoutedDatas, nowSimulationStep);
 }
 
 

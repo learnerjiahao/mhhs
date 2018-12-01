@@ -17,7 +17,6 @@ set(HEADER_FILES
         message/routed_data_imessage.h
         message/routed_data_imsgs_pool.h
         simulation/subbasins_container.h
-        models/xaj3/xaj3_runoff_model.h
         utils/ret_msg.h
         )
 
@@ -47,14 +46,32 @@ set(MODEL_HEADS
         models/model_factory.h
         models/model_producer.h
         models/model_warehouse.h
-        models/xaj3/xaj3_producer.h)
+
+        models/xaj/xaj_runoff_model.h
+        models/xaj/xaj_producer.h
+
+        models/xaj3/xaj3_runoff_model.h
+        models/xaj3/xaj3_producer.h
+
+        models/muskingum/muskingum_routing_model.h
+        models/muskingum/mskg_model_producer.h
+
+        )
 
 set(MODEL_SRCS
         models/base_model.cpp
         models/model_context.cpp
         models/model_factory.cpp
+
         models/xaj3/xaj3_runoff_model.cpp
-        models/xaj3/xaj3_producer.cpp)
+        models/xaj3/xaj3_producer.cpp
+
+        models/xaj/xaj_runoff_model.cpp
+        models/xaj/xaj_producer.cpp
+
+        models/muskingum/muskingum_routing_model.cpp
+        models/muskingum/mskg_model_producer.cpp
+        )
 
 set(MAIN_FILE main.cpp)
 

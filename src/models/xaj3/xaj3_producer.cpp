@@ -10,6 +10,6 @@ XAJ3ModelProducer *XAJ3ModelProducer::getInstance() {
     return instance;
 }
 
-BaseModel *XAJ3ModelProducer::newModel(const ModelContext *pModelContext) {
+BaseModel *XAJ3ModelProducer::newModel(ModelContext *pModelContext) {
     return new XAJ3RunoffModel(pModelContext);
 }

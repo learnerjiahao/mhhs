@@ -21,3 +21,5 @@ double RoutingDataMeta::getFlow() const {
 void RoutingDataMeta::updateMetaData(const RoutingDataMeta &secondData) {
     this->flow = secondData.getFlow();
 }
+
+RoutingDataMeta::RoutingDataMeta(float) : flow(flow) {}

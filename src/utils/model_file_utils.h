@@ -24,7 +24,15 @@ public:
     static bool readOneValue(const std::map<std::string, std::string> &valuesMap,
                              T &value, const std::string &valueName);
 
-    static std::vector<std::string> splitStr(char *str, const char *delim);
+    static std::vector<std::string> splitStr(char *str, const char *delim) {
+        std::vector<std::string> strs;
+        char *p_str = std::strtok(str, delim);
+        while (p_str) {
+            strs.push_back(p_str);
+            p_str = std::strtok(nullptr, delim);
+        }
+        return strs;
+    };
 };
 
 template<typename T>
@@ -55,15 +63,15 @@ bool ModelFileUtils::readOneValue(const std::map<std::string, std::string> &valu
     return true;
 }
 
-std::vector<std::string> ModelFileUtils::splitStr(char *str, const char *delim) {
-    std::vector<std::string> strs;
-    char *p_str = std::strtok(str, delim);
-    while (p_str) {
-        strs.push_back(p_str);
-        p_str = std::strtok(nullptr, delim);
-    }
-    return strs;
-}
+//std::vector<std::string> ModelFileUtils::splitStr(char *str, const char *delim) {
+//    std::vector<std::string> strs;
+//    char *p_str = std::strtok(str, delim);
+//    while (p_str) {
+//        strs.push_back(p_str);
+//        p_str = std::strtok(nullptr, delim);
+//    }
+//    return strs;
+//}
 
 
 #endif //PNOHS_ALPHA_MODEL_FILE_UTILS_H

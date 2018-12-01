@@ -15,24 +15,26 @@
 class BaseModel {
 
 protected:
-    virtual RetMSG checkInitDatas(const std::map<std::string, double> &initDatas);
-    virtual RetMSG checkParaDatas(const std::map<std::string, double> &paraDatas);
-    virtual RetMSG checkInputDatas(const std::map<std::string, std::vector<double>> &inputDatas);
+    virtual RetMSG checkInitDatas(const ModelContext *pModelContext);
+    virtual RetMSG checkParaDatas(const ModelContext *pModelContext);
+    virtual RetMSG checkInputDatas(const ModelContext *pModelContext);
 
     RetMSG checkDatas(const std::map<std::string, double> &datas, const std::vector<std::string> &dataNames);
 
-    RetMSG checkModelDatas(const ModelContext *pModelContext);
+    std::vector<std::string> paraNames, initNames, inputNames;
 
 public:
     BaseModel(const ModelContext *pModelContext);
-    virtual RoutingDataMeta runModel(const ModelContext &pModelContext,
+    virtual RoutingDataMeta runModel(ModelContext &pModelContext,
                                      const Config &configValues,
                                      const RoutingDataMeta &upRoutDatas,
                                      int nowTimeStep) = 0;
 
-    virtual std::vector<std::string> getParaNames() = 0;
-    virtual std::vector<std::string> getInitNames() = 0;
-    virtual std::vector<std::string> getInputNames() = 0;
+    RetMSG checkModelDatas(const ModelContext *pModelContext);
+
+    virtual std::vector<std::string> getParaNames(const ModelContext *pModelContext);
+    virtual std::vector<std::string> getInitNames(const ModelContext *pModelContext);
+    virtual std::vector<std::string> getInputNames(const ModelContext *pModelContext);
 
 };
 

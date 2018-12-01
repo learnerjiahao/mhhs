@@ -30,6 +30,8 @@ public:
     std::string runoffModelName;
     std::string routingModelName;
 
+    double res_flow;
+
 protected:
     RetMSG readMapValues(const std::string &filePath, std::map<std::string, double> &dataMap, const Config &configValues);
     RetMSG readInputDatas(const std::string &filePath, const Config &configValues);
@@ -39,6 +41,9 @@ protected:
 public:
     ModelContext(utils::_type_nodeid _nodeid);
     RetMSG initContext(const Config &configValues);
+    double &getParamData(std::string paraName);
+    double &getInitData(std::string paraName);
+    std::vector<double> &getInputData(std::string paraName);
 };
 
 #endif //MHHSS_MODEL_CONTEXT_H

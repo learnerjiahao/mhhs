@@ -1,5 +1,5 @@
 [dispatch]
-dispatch_file_prefix = "../../inputs/dispatch/dtoo/dispatch_2/dispatch.json"
+dispatch_file_prefix = "partion_input/huaihe_subset/metis_2.json"
 
 [simulation]
 start_time = "2006-01-01 00:00"  # must be set
