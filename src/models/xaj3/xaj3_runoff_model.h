@@ -11,6 +11,14 @@
 
 class XAJ3RunoffModel : public BaseModel {
 private:
+public:
+    std::vector<std::string> getParaNames(const ModelContext *pModelContext) override;
+
+    std::vector<std::string> getInitNames(const ModelContext *pModelContext) override;
+
+    std::vector<std::string> getInputNames(const ModelContext *pModelContext) override;
+
+private:
     //基本参数
     double &WUM;      // 上下深层流域蓄水容量（mm）
     double &WLM;

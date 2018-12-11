@@ -10,6 +10,9 @@
 #include "xaj3/xaj3_producer.h"
 #include "xaj/xaj_producer.h"
 #include "muskingum/mskg_model_producer.h"
+#include "sac/sac_model_producer.h"
+#include "diffusive_waves/dswv_model_producer.h"
+#include "hims/hims_producer.h"
 
 namespace models {
 
@@ -17,6 +20,8 @@ namespace models {
     const static std::string XAJ3_MODEL_NAME = "xaj3";
     const static std::string XAJ_MODEL_NAME = "xaj";
     const static std::string SAC_MODEL_NAME = "sac";
+    const static std::string HIMS_MODEL_NAME = "hims";
+
     // routing models's names
     const static std::string MUSKINGUM_MODEL_NAME = "mskg";
     const static std::string DIFFUSIVE_WAVES_MODEL_NAME = "dswv";
@@ -25,13 +30,14 @@ namespace models {
     static bool registryModelProducers() {
        bool flag =
                 // runoff models
-               ModelFactory::addModelRegistry(XAJ3_MODEL_NAME, XAJ3ModelProducer::getInstance()) &&
-               ModelFactory::addModelRegistry(XAJ_MODEL_NAME, XAJModelProducer::getInstance()) &&
-//                pModelFactory->addRunoffRegistry(SAC_MODEL_NAME, SACModelProducer::getInstance()) &&
-//                // routing models
-                ModelFactory::addModelRegistry(MUSKINGUM_MODEL_NAME, MSKGModelProducer::getInstance()); //&&
-//                pModelFactory->addRoutingRegistry(DIFFUSIVE_WAVES_MODEL_NAME, DSWVModelProducer::getInstance())
-//                ;
+                ModelFactory::addModelRegistry(XAJ3_MODEL_NAME, XAJ3ModelProducer::getInstance()) &&
+                ModelFactory::addModelRegistry(XAJ_MODEL_NAME, XAJModelProducer::getInstance()) &&
+                ModelFactory::addModelRegistry(SAC_MODEL_NAME, SACModelProducer::getInstance()) &&
+                ModelFactory::addModelRegistry(HIMS_MODEL_NAME, HIMSModelProducer::getInstance()) &&
+//              // routing models
+                ModelFactory::addModelRegistry(MUSKINGUM_MODEL_NAME, MSKGModelProducer::getInstance())&&
+                ModelFactory::addModelRegistry(DIFFUSIVE_WAVES_MODEL_NAME, DSWVModelProducer::getInstance())
+                ;
         return flag;
     }
 }

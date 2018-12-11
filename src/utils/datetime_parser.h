@@ -76,6 +76,25 @@ public:
      */
     static unsigned long getTimesteps(std::string s_starttime, std::string s_endtime, std::string datetime_format, unsigned long time_stride);
 
+    /**
+     *
+     * @param n_starttime
+     * @return
+     */
+    static unsigned getDayOfYear(time_t time);
+
+    /**
+     *
+     * @param s_starttime
+     * @param timesteps
+     * @param time_stride
+     * @param datetime_format
+     * @return
+     */
+    static unsigned getDayOfYear(const std::string &s_starttime,
+                                unsigned long timesteps,
+                                unsigned long time_stride,
+                                const std::string &datetime_format);
 };
 
 

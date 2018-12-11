@@ -56,6 +56,14 @@ set(MODEL_HEADS
         models/muskingum/muskingum_routing_model.h
         models/muskingum/mskg_model_producer.h
 
+        models/sac/sac_runoff_model.h
+        models/sac/sac_model_producer.h
+
+        models/hims/hims_runoff_model.h
+        models/hims/hims_producer.h
+
+        models/diffusive_waves/dswv_model_producer.h
+        models/diffusive_waves/diffusive_waves_routing_model.h
         )
 
 set(MODEL_SRCS
@@ -71,6 +79,15 @@ set(MODEL_SRCS
 
         models/muskingum/muskingum_routing_model.cpp
         models/muskingum/mskg_model_producer.cpp
+
+        models/sac/sac_runoff_model.cpp
+        models/sac/sac_model_producer.cpp
+
+        models/hims/hims_runoff_model.cpp
+        models/hims/hims_producer.cpp
+
+        models/diffusive_waves/dswv_model_producer.cpp
+        models/diffusive_waves/diffusive_waves_routing_model.cpp
         )
 
 set(MAIN_FILE main.cpp)

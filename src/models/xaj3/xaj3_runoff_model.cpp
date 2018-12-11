@@ -211,8 +211,21 @@ XAJ3RunoffModel::XAJ3RunoffModel(ModelContext *pModelContext) :
         Ps(pModelContext->getInputData("P")),
         EIs(pModelContext->getInputData("EI")) {
 
-    paraNames = {"F", "WUM", "WLM", "WDM",  "K", "C", "B", "IMP", "SM",
+//    paraNames = {"F", "WUM", "WLM", "WDM",  "K", "C", "B", "IMP", "SM",
+//                 "EX", "KG", "KSS", "KKG", "KKSS", "KSTOR"};
+//    initNames = {"WU0", "WL0", "WD0", "FR0", "S0", "QRSS0", "QRG0"};
+//    inputNames = {"P", "EI"};
+}
+
+std::vector<std::string> XAJ3RunoffModel::getParaNames(const ModelContext *pModelContext) {
+    return {"F", "WUM", "WLM", "WDM",  "K", "C", "B", "IMP", "SM",
                  "EX", "KG", "KSS", "KKG", "KKSS", "KSTOR"};
-    initNames = {"WU0", "WL0", "WD0", "FR0", "S0", "QRSS0", "QRG0"};
-    inputNames = {"P", "EI"};
+}
+
+std::vector<std::string> XAJ3RunoffModel::getInitNames(const ModelContext *pModelContext) {
+    return {"WU0", "WL0", "WD0", "FR0", "S0", "QRSS0", "QRG0"};
+}
+
+std::vector<std::string> XAJ3RunoffModel::getInputNames(const ModelContext *pModelContext) {
+    return {"P", "EI"};
 }

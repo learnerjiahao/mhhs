@@ -33,3 +33,18 @@ TEST(TEST_MODEL_CONTEXT, TEST_MODEL_BASE) {
     BaseModel *pmodel = new XAJRunoffModel(pContext);
     pmodel->getInitNames(pContext);
 }
+
+TEST(TEST_MODEL_CONTEXT, TEST_MODEL_XAJ) {
+    Config *config = Config::getInstance();
+    config->resolveConfig("../../inputs/config.toml");
+    config->input_data_path = "../../inputs/model_input/huaihe_subset";
+    ModelContext *pContext = new ModelContext(286);
+    pContext->initContext(*config);
+    BaseModel *pmodel = new XAJRunoffModel(pContext);
+    RoutingDataMeta flow;
+    RoutingDataMeta upFlow;
+    for (int i = 0; i < config->sim_timesteps; ++i) {
+        flow = pmodel->runModel(*pContext, *config, upFlow, i + 1);
+        std::cout << flow.getFlow() << std::endl;
+    }
+}

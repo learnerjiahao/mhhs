@@ -4,7 +4,7 @@ dispatch_file_prefix = "partion_input/huaihe_subset/metis_2.json"
 [simulation]
 start_time = "2006-01-01 00:00"  # must be set
 # either time_steps or end_time should be set, meanwhile time_step has higher priority
-# time_steps = 60      # must be set if end_time is not set
+time_steps = 60      # must be set if end_time is not set
 end_time = "2008-01-01 00:00"   # should be set if time_steps is not set
 time_stride = 24  # unit: h , default is 24h
 input_data_path = "model_input/huaihe_subset/"  # the input data files path, default is model_input

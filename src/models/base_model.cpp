@@ -6,7 +6,7 @@
 #include "../utils/mpiutil.h"
 
 RetMSG BaseModel::checkInitDatas(const ModelContext *pModelContext) {
-    RetMSG msg = checkDatas(pModelContext->initDatas, this->initNames);
+    RetMSG msg = checkDatas(pModelContext->initDatas, this->getInitNames(pModelContext));
     if (!msg.isSuccess()) {
         return RetMSG("init data: " + msg.getMsg(), -1);
     }
@@ -14,7 +14,7 @@ RetMSG BaseModel::checkInitDatas(const ModelContext *pModelContext) {
 }
 
 RetMSG BaseModel::checkParaDatas(const ModelContext *pModelContext) {
-    RetMSG msg = checkDatas(pModelContext->params, this->paraNames);
+    RetMSG msg = checkDatas(pModelContext->params, this->getParaNames(pModelContext));
     if (!msg.isSuccess()) {
         return RetMSG("param data: " + msg.getMsg(), -1);
     }
@@ -22,7 +22,7 @@ RetMSG BaseModel::checkParaDatas(const ModelContext *pModelContext) {
 }
 
 RetMSG BaseModel::checkInputDatas(const ModelContext *pModelContext) {
-    std::vector<std::string> inputNames = this->inputNames;
+    std::vector<std::string> inputNames = this->getInputNames(pModelContext);
     for (int i = 0; i < inputNames.size(); ++i) {
         if (pModelContext->inputDatas.find(inputNames.at(i)) == pModelContext->inputDatas.end()) {
             return RetMSG("input data:" + inputNames.at(i) + " can not be found", -1);
@@ -57,15 +57,15 @@ RetMSG BaseModel::checkModelDatas(const ModelContext *pModelContext) {
 }
 
 BaseModel::BaseModel(const ModelContext *pModelContext) {}
-
-std::vector<std::string> BaseModel::getParaNames(const ModelContext *pModelContext) {
-    return this->paraNames;
-}
-
-std::vector<std::string> BaseModel::getInitNames(const ModelContext *pModelContext) {
-    return this->initNames;
-}
-
-std::vector<std::string> BaseModel::getInputNames(const ModelContext *pModelContext) {
-    return this->inputNames;
-}
+//
+//std::vector<std::string> BaseModel::getParaNames(const ModelContext *pModelContext) {
+//    return this->paraNames;
+//}
+//
+//std::vector<std::string> BaseModel::getInitNames(const ModelContext *pModelContext) {
+//    return this->initNames;
+//}
+//
+//std::vector<std::string> BaseModel::getInputNames(const ModelContext *pModelContext) {
+//    return this->inputNames;
+//}

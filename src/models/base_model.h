@@ -21,7 +21,7 @@ protected:
 
     RetMSG checkDatas(const std::map<std::string, double> &datas, const std::vector<std::string> &dataNames);
 
-    std::vector<std::string> paraNames, initNames, inputNames;
+//    std::vector<std::string> paraNames, initNames, inputNames;
 
 public:
     BaseModel(const ModelContext *pModelContext);
@@ -32,9 +32,9 @@ public:
 
     RetMSG checkModelDatas(const ModelContext *pModelContext);
 
-    virtual std::vector<std::string> getParaNames(const ModelContext *pModelContext);
-    virtual std::vector<std::string> getInitNames(const ModelContext *pModelContext);
-    virtual std::vector<std::string> getInputNames(const ModelContext *pModelContext);
+    virtual std::vector<std::string> getParaNames(const ModelContext *pModelContext) = 0;
+    virtual std::vector<std::string> getInitNames(const ModelContext *pModelContext) = 0;
+    virtual std::vector<std::string> getInputNames(const ModelContext *pModelContext) = 0;
 
 };
 

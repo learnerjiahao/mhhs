@@ -62,3 +62,18 @@ std::string DatetimeParser::getDateTimeStr(std::string s_starttime, unsigned lon
             timesteps, time_stride),
                     datetime_format);
 }
+
+unsigned DatetimeParser::getDayOfYear(time_t time) {
+    struct tm tmp_time;
+    tmp_time = *localtime(&time);
+    return tmp_time.tm_yday;
+}
+
+unsigned DatetimeParser::getDayOfYear(const std::string &s_starttime,
+                                      unsigned long timesteps,
+                                      unsigned long time_stride,
+                                      const std::string &datetime_format) {
+    std::string nowDataTimeStr = DatetimeParser::getDateTimeStr(s_starttime, timesteps, time_stride, datetime_format);
+    size_t nowTimeStamp = DatetimeParser::getStapeTimestamp(nowDataTimeStr, datetime_format);
+    return DatetimeParser::getDayOfYear(nowTimeStamp);
+}
