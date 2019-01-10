@@ -39,3 +39,6 @@ tool/easydhm/inputs/*
 *.exe
 *.out
 *.app
+
+# user
+inputs
